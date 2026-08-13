@@ -1,0 +1,280 @@
+{% extends "residents/base.html" %}
+
+{% block title %}
+Profil de {{ resident.first_name }} {{ resident.last_name }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .profile-header {
+        background-color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .profile-photo {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .profile-photo-empty {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+
+    .profile-name {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    .profile-id {
+        color: #666;
+        margin-top: 8px;
+    }
+
+    .info-card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .info-card h2 {
+        margin-top: 0;
+        color: #0d6efd;
+        border-bottom: 1px solid #eeeeee;
+        padding-bottom: 10px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .info-item strong {
+        display: block;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 10px 18px;
+        background-color: #0d6efd;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+    .back-button:hover {
+        background-color: #0b5ed7;
+    }
+
+    .edit-button {
+        display: inline-block;
+        padding: 10px 18px;
+        background-color: #198754;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
+
+    .edit-button:hover {
+        background-color: #157347;  
+    }
+
+</style>
+
+<h1>Profil du résident</h1>
+
+<div class="profile-header">
+
+    {% if resident.photo %}
+
+        <img
+            src="{{ resident.photo.url }}"
+            alt="Photo de {{ resident.first_name }} {{ resident.last_name }}"
+            class="profile-photo"
+        >
+
+    {% else %}
+
+        <div class="profile-photo-empty">
+            Aucune photo
+        </div>
+
+    {% endif %}
+
+    <div>
+        <h2 class="profile-name">
+            {{ resident.first_name }} {{ resident.last_name }}
+        </h2>
+
+        <p class="profile-id">
+            ID du résident : {{ resident.id }}
+        </p>
+    </div>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>Informations personnelles</h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+            <strong>Prénom</strong>
+            {{ resident.first_name }}
+        </div>
+
+        <div class="info-item">
+            <strong>Nom</strong>
+            {{ resident.last_name }}
+        </div>
+
+        <div class="info-item">
+            <strong>Sexe</strong>
+            {{ resident.get_gender_display }}
+        </div>
+
+        <div class="info-item">
+            <strong>Date de naissance</strong>
+            {{ resident.birth_date|default:"Non renseignée" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Nationalité</strong>
+            {{ resident.nationality|default:"Non renseignée" }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>Coordonnées</h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+            <strong>Téléphone</strong>
+            {{ resident.phone|default:"Non renseigné" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Personne à contacter</strong>
+            {{ resident.emergency_contact|default:"Non renseignée" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Téléphone d'urgence</strong>
+            {{ resident.emergency_phone|default:"Non renseigné" }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>Admission et statut</h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+            <strong>Date d'admission</strong>
+            {{ resident.admission_date }}
+        </div>
+
+        <div class="info-item">
+            <strong>Statut</strong>
+            {{ resident.get_status_display }}
+        </div>
+
+        <div class="info_item">
+            <strong>Chambre:</strong>
+
+            {% if resident.room %}
+                Chambre
+            {{ resident.room.number }}
+            {% else %}    
+                Aucune chambre attribuée
+            {% endif %}
+    
+        </div>
+    </div>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>Informations médicales</h2>
+
+    <div class="info-grid">
+
+        <div class="info-item">
+            <strong>Allergies</strong>
+            {{ resident.allergies|default:"Aucune information" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Maladies</strong>
+            {{ resident.diseases|default:"Aucune information" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Traitements</strong>
+            {{ resident.treatments|default:"Aucune information" }}
+        </div>
+
+        <div class="info-item">
+            <strong>Notes médicales</strong>
+            {{ resident.medical_notes|default:"Aucune information" }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>Observations</h2>
+
+    <p>
+        {{ resident.observations|default:"Aucune observation" }}
+    </p>
+
+</div>
+
+<a href="{% url 'resident_edit' resident.id %}" class="edit-button">
+    ← ✏️ Modifier
+</a>
+
+
+<a href="{% url 'residents_list' %}" class="back-button">
+    ← Retour à la liste des résidents
+</a>
+
+{% endblock %}

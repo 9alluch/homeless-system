@@ -1,0 +1,105 @@
+{% extends "residents/base.html" %}
+
+{% block title %}
+Connexion
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 60px auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #0d6efd;
+    }
+
+    .login-container label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 18px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 11px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .login-button:hover {
+        background-color: #0b5ed7;
+    }
+
+    .login-error {
+        color: #dc3545;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="login-container">
+
+    <h1>Connexion</h1>
+
+    {% if form.errors %}
+        <p class="login-error">
+            Nom d'utilisateur ou mot de passe incorrect.
+        </p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="id_username">
+            Nom d'utilisateur
+        </label>
+
+        <input
+            type="text"
+            name="username"
+            id="id_username"
+            required
+        >
+
+        <label for="id_password">
+            Mot de passe
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            id="id_password"
+            required
+        >
+
+        <button type="submit" class="login-button">
+            🔐 Se connecter
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

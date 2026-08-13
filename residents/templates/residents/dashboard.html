@@ -1,0 +1,89 @@
+{% extends "residents/base.html" %}
+
+{% block title %}
+Tableau de bord 
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .dashboard-cards{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .dashboard-cards{
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .dashboard-cards{
+        margin-top: 0;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .dashboard-cards p {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 15px 0 0;
+        color: #0d6efd;
+    }    
+    @media (max-width: 768px) {
+        .dashboard-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<h1>Tableau de bord</h1>
+
+<p>
+    Bienvenue sur le tableau de bord de l'Association d'Aide aux Sans-Abri.
+</p>
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-cards">
+        <h2>Nombre total de résidents</h2>
+        <p>{{ total_residents }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Hommes</h2>
+        <p>{{ men_count }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Femmes</h2>
+        <p>{{ women_count }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Résidents présents</h2>
+        <p>{{ present_count }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Résidents partis</h2>
+        <p>{{ left_count }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Résidents hospitalisés</h2>
+        <p>{{ hospital_count }}</p>
+    </div>
+
+    <div class="dashboard-cards">
+        <h2>Chambres</h2>
+        <p>{{ total_rooms }}</p>
+    </div>
+
+</div>
+
+{% endblock %}

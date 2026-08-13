@@ -1,0 +1,352 @@
+{% extends "residents/base.html" %}
+
+{% block title %}
+Résidents
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .resident-photo {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .photo-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.45);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .photo-modal-content {
+        position: relative;
+        background-color: white;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .photo-modal-content img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .photo-close {
+        position: absolute;
+        top: 5px;
+        right: 8px;
+        border: none;
+        background: white;
+        font-size: 25px;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th {
+        background-color: #0d6efd;
+        color: white;
+        padding: 14px;
+        text-align: left;
+    }
+
+    td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    tbody tr:hover {
+        background-color: #f4f7fb;
+    }
+
+    .add-resident-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 18px;
+        background-color: #198754;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+    
+
+    .add-resident-button:hover {
+    background-color: #157347;
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .filter-form input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    .filter-form button {
+        padding: 10px 18px;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .filter-form button:hover {
+        background-color: #0b5ed7;
+    }
+
+</style>
+
+<h1>Résidents</h1>
+
+<p>
+    Voici la liste des résidents de l'association.
+</p>
+
+<form method="GET" class="filter-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Rechercher un résident..."
+        value="{{ search }}"
+    >
+
+    <select name="gender">
+
+        <option value="">Tous les sexes</option>
+
+        <option value="M" {% if selected_gender == "M" %}selected{% endif %}>
+            Homme
+        </option>
+
+        <option value="F" {% if selected_gender == "F" %}selected{% endif %}>
+            Femme
+        </option>
+
+    </select>
+
+    <select name="status">
+
+        <option value="">Tous les statuts</option>
+
+        <option value="active" {% if selected_status == "active" %}selected{% endif %}>
+            Présent
+        </option>
+
+        <option value="left" {% if selected_status == "left" %}selected{% endif %}>
+            Parti
+        </option>
+
+        <option value="hospital" {% if selected_status == "hospital" %}selected{% endif %}>
+            Hospitalisé
+        </option>
+
+    </select>
+
+    <select name="sort">
+        <option value="id" {% if sort == "id" %}selected{% endif %}>
+            ID — croissant
+        </option>
+
+        <option value="-id" {% if sort == "-id" %}selected{% endif %}>
+            ID — décroissant
+        </option>
+
+        <option value="last_name" {% if sort == "last_name" %}selected{% endif %}>
+            Nom — A → Z
+        </option>
+
+        <option value="-last_name" {% if sort == "-last_name" %}selected{% endif %}>
+            Nom — Z → A
+        </option>
+
+        <option value="-admission_date" {% if sort == "-admission_date" %}selected{% endif %}>
+            Admission — plus récente
+        </option>
+
+        <option value="admission_date" {% if sort == "admission_date" %}selected{% endif %}>
+            Admission — plus ancienne
+        </option>
+
+        <option value="gender" {% if sort == "gender" %}selected{% endif %}>
+            Sexe — Homme → Femme
+        </option>
+
+        <option value="-gender" {% if sort == "-gender" %}selected{% endif %}>
+            Sexe — Femme → Homme
+        </option>
+
+        <option value="room" {% if sort == "room" %}selected{% endif %}>
+            Chambre — croissant
+        </option>
+
+        <option value="-room" {% if sort == "-room" %}selected{% endif %}>
+            Chambre — décroissant
+        </option>
+
+    </select>
+        
+    <button type="submit">
+        🔎 Rechercher
+    </button>
+
+</form>
+
+<a href="{% url 'resident_create' %}" class="add-resident-button">
+    ➕ Ajouter un résident
+</a>
+
+
+<table>
+
+    <thead>
+        <tr>
+            <th>photo</th>
+            <th>ID</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Sexe</th>
+            <th>Statut</th>
+            <th>Chambre</th>
+            <th>Date d'admission</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for resident in residents %}
+
+            <tr>
+                <td>
+                    {% if resident.photo %}
+                        <img 
+                            src="{{ resident.photo.url }}" 
+                            alt="Photo de {{ resident.first_name }}  {{ resident.last_name }}" 
+                            class="resident-photo"
+                            onclick="openPhoto('{{ resident.photo.url }}')"
+                        >  
+                    {% else %}
+                        Aucune photo
+                    {% endif %}
+                </td>
+                <td>{{ resident.id }}</td>
+                <td>{{ resident.first_name }}</td>
+                <td>{{ resident.last_name }}</td>
+                <td>{{ resident.get_gender_display }}</td>
+                <td>{{ resident.get_status_display }}</td>
+                <td>
+                    {% if resident.room %}
+                        {{ resident.room.number }}
+                    {% else %} 
+                        Aucune chambre
+                    {% endif %}
+                </td>
+                <td>{{ resident.admission_date }}</td>
+
+                <td>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="{% url 'resident_detail' resident.id %}">
+                            👁️ Voir
+                        </a>
+
+                        <a href="{% url 'resident_edit' resident.id %}">
+                            ✏️ Modifier
+                        </a>
+
+                        <a href="{% url 'resident_delete' resident.id %}">
+                            🗑️ Supprimer
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+        {% empty %}     
+
+            <tr>
+                <td colspan="9">
+                    Aucun résident n'est actuellement enregistré.
+                </td>
+            </tr>
+        {% endfor %}   
+
+    </tbody>
+
+</table>
+
+<div style="margin-top: 20px; text-align: center;">
+
+    {% if residents.has_previous %}
+        <a href="?page=1&search={{ search }}&gender={{ selected_gender }}&status={{ selected_status }}&sort={{ sort }}">
+            ⏮ Première
+        </a>
+
+        <a href="?page={{ residents.previous_page_number }}&search={{ search }}&gender={{ selected_gender }}&status={{ selected_status }}&sort={{ sort }}">
+            ← Précédente
+        </a>
+    {% endif %}
+
+    <span style="margin: 0 15px;">
+        Page {{ residents.number }} sur {{ residents.paginator.num_pages }}
+    </span>
+
+    {% if residents.has_next %}
+        <a href="?page={{ residents.next_page_number }}&search={{ search }}&gender={{ selected_gender }}&status={{ selected_status }}&sort={{ sort }}">
+            Suivante →
+        </a>
+
+        <a href="?page={{ residents.paginator.num_pages }}&search={{ search }}&gender={{ selected_gender }}&status={{ selected_status }}&sort={{ sort }}">
+            Dernière ⏭
+        </a>
+    {% endif %}
+
+</div>
+
+<div id="photoModal" class="photo-modal" onclick="closePhoto()">
+
+    <div class="photo-modal-content" onclick="event.stopPropagation()">
+
+        <button class="photo-close" onclick="closePhoto()">
+            ×
+        </button>
+
+        <img id="largePhoto" src="" alt="Photo du résident">
+
+    </div>
+
+</div>
+
+<script>
+    function openPhoto(photoUrl) {
+        document.getElementById("largePhoto").src = photoUrl;
+        document.getElementById("photoModal").style.display = "flex";
+    }
+
+    function closePhoto() {
+        document.getElementById("photoModal").style.display = "none";
+    }
+</script>
+{% endblock %}
