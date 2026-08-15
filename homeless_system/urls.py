@@ -22,7 +22,7 @@ from residents import views
 
 
 urlpatterns = [
-    path("healthz", views.healthz, name="healthz"),
+    path("healthz/", views.healthz, name="healthz"),
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("residents/", views.resident_list, name="residents_list"),
