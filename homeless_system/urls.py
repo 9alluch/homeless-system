@@ -20,7 +20,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from residents import views
 
+
 urlpatterns = [
+    path("healthz/", views.healthz, name="heamthz"),
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("residents/", views.resident_list, name="residents_list"),

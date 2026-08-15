@@ -1,8 +1,12 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Resident, Room
 from .forms import ResidentForm
 from django.core.paginator import Paginator
 from django.db.models import Q
+
+def healthz(request):
+    return HttpRespnose("OK")
 
 
 def home(request):
