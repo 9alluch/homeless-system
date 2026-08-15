@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 def healthz(request):
-    return HttpRespnose("OK")
+    return HttpResponse("OK")
 
 
 def home(request):
