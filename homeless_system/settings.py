@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'residents',
 ]
+
+UNFOLD = {
+    "SITE_TITLE": "Administration",
+    "SITE_HEADER": "Association d'Aide aux Sans-Abri",
+    "SITE_SYMBOL": "home",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
