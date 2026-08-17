@@ -4,14 +4,21 @@ from .models import Resident, Room
 from .forms import ResidentForm
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 def healthz(request):
     return HttpResponse("OK")
 
 
-def home(request):
-    return render(request, "residents/home.html")
 
+def home(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    return redirect("login")
+
+
+
+@login_required
 def dashboard(request):
     total_residents = Resident.objects.count()
     men_count = Resident.objects.filter(gender="M").count()
@@ -43,8 +50,9 @@ def dashboard(request):
             "full_rooms": full_rooms,
             "available_spaces": available_spaces,
         }
-    )    
+    )
 
+@login_required
 def resident_list(request):
     residents = Resident.objects.all()
 
@@ -114,6 +122,7 @@ def resident_list(request):
         }
     )
 
+@login_required
 def resident_detail(request, resident_id):
     resident = Resident.objects.get(id=resident_id)
 
@@ -123,6 +132,7 @@ def resident_detail(request, resident_id):
         {"resident": resident}
     )    
 
+@login_required
 def resident_edit(request, resident_id):
     resident = Resident.objects.get(id=resident_id)
 
@@ -142,6 +152,7 @@ def resident_edit(request, resident_id):
         {"form": form, "resident": resident}
     )
 
+@login_required
 def resident_create(request):
 
     if request.method == "POST":
@@ -160,6 +171,7 @@ def resident_create(request):
         {"form": form}
     )    
 
+@login_required
 def resident_delete(request, resident_id):
     resident = get_object_or_404(Resident, id=resident_id)
 
