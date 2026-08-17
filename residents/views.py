@@ -184,3 +184,21 @@ def resident_delete(request, resident_id):
         "residents/resident_confirm_delete.html",
         {"resident": resident}
     )    
+
+@login_required
+def room_create(request):
+    if request.method == "POST":
+        number = request.POST.get("number")
+        capacity = request.POST.get("capacity")
+
+        Room.objects.create(
+            number=number,
+            capacity=capacity
+        )
+
+        return redirect("residents_list")
+
+    return render(
+        request,
+        "residents/room_create.html"
+    )    

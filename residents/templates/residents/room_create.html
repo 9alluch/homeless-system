@@ -1,0 +1,45 @@
+{% extends "residents/base.html" %}
+
+{% block title %}
+Ajouter une chambre
+{% endblock %}
+
+{% block content %}
+
+<h1>Ajouter une chambre</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div>
+        <label for="number">Numéro de chambre</label>
+        <input type="text" id="number" name="number" required>
+    </div>
+
+    <br>
+
+    <div>
+        <label for="capacity">Capacité maximale</label>
+        <input
+            type="number"
+            id="capacity"
+            name="capacity"
+            min="1"
+            max="30"
+            required
+        >
+    </div>
+
+    <br>
+
+    <button type="submit">
+        💾 Enregistrer la chambre
+    </button>
+
+    <a href="{% url 'residents_list' %}">
+        Annuler
+    </a>
+
+</form>
+
+{% endblock %}

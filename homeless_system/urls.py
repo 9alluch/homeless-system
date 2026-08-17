@@ -32,6 +32,7 @@ urlpatterns = [
     path("residents/<int:resident_id>/edit/", views.resident_edit, name="resident_edit"),
     path("residents/create/", views.resident_create, name="resident_create"),
     path("residents/<int:resident_id>/delete/", views.resident_delete, name="resident_delete"),
+    path("rooms/create/", views.room_create, name="room_create"),
 ]
 
 if  settings.DEBUG:
